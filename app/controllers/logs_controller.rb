@@ -9,12 +9,22 @@ class LogsController < ApplicationController
 
   def list
     @logs = User.find_by(iidxid: params[:iidxid]).logs.pluck(:created_at).uniq
+    @premium = [1, 2, 3, 4, 5, 6, 8, 13, 16, 21, 34, 53, 63, 73, 100]
   end
 
   def maneger
     flash[:notice] = '同期処理を承りました。逐次反映を行います。'
     flash[:alert] = '反映されていない場合はマネージャに該当IIDXIDが存在しないと思われます。(登録しているけどIIDXIDを設定していないなど)'
     redirect_to list_logs_path
+  end
+
+  def official
+    render :show_modal
+  end
+
+  def official_scrape
+    binding.pry
+    render :reload
   end
 
   def show

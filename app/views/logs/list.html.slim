@@ -2,6 +2,9 @@
 = link_to '月別情報', graph_logs_path, class: 'btn btn-success'
 - if user_signed_in? && current_user.iidxid == params[:iidxid] && flash[:notice] != '同期処理を承りました。逐次反映を行います。'
   = link_to 'クリアランプマネージャとの同期', maneger_logs_path, data: { disable_with: '同期中', confirm: 'マネージャにIIDXIDが設定されていないと同期できません。同期しますか?' }, class: 'btn btn-danger', method: :post
+/- if user_signed_in? && @premium.include?(current_user.id) && flash[:notice] != '同期処理を承りました。逐次反映を行います。'
+  = link_to '公式同期', official_log_path(current_user.iidxid), class: 'btn btn-primary', remote: true
+
 
 h2 更新履歴
 table.datatable
