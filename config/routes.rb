@@ -46,8 +46,10 @@ Rails.application.routes.draw do
 
   # log
   get '/logs/:iidxid/graph' => 'logs#graph', as: :graph_logs
+  get '/logs/:iidxid/official' => 'logs#official', as: :official_log
   get '/logs/:iidxid/list' => 'logs#list', as: :list_logs
   post '/logs/:iidxid/list' => 'logs#maneger', as: :maneger_logs
+  post '/logs/:iidxid/list' => 'logs#official_scrape', as: :official_scrape_log
   get '/logs/:iidxid/sheet' => 'logs#sheet', as: :sheet_log
   get '/logs/:iidxid/:date' => 'logs#show', as: :show_log
 

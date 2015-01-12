@@ -1,0 +1,16 @@
+= form_tag({ controller: %(logs), action: %(official_scrape) }, html: { class: 'form-horizontal' }, remote: true)
+  - modal_body = capture do
+    .form-group
+      label.col-md-3.control-label 公式のログインID
+      .col-md-8
+        = text_field_tag :id, '', { class: 'form-control' }
+    .form-group
+      label.col-md-3.control-label 公式のパスワード
+      .col-md-8
+        = text_field_tag :password, '', { class: 'form-control' }
+    = hidden_field_tag :user_id, value: current_user.id
+  - modal_footer = capture do
+    = submit_tag %(開始), :confirm => %(本当に開始してもよろしいでしょうか？), class: 'btn btn-primary'
+    = content_tag :button, 'キャンセル', class: 'btn btn-default', 'data-dismiss' => 'modal'
+
+  - modal_dialog :id => 'modal-form', :header => { :show_close => true, :dismiss => 'modal', :title => '公式同期' }, body: modal_body, :footer => modal_footer
