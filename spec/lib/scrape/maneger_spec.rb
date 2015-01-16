@@ -1,11 +1,15 @@
 require 'rails_helper'
 
 describe 'lib/scrape/maneger.rb' do
+  # 前処理
+  before(:all) do
+    @res = Scrape::Maneger.new(build(:user))
+    @agent = Mechanize.new
+  end
+
   # 登録されていない場合は空の配列を返す
   it 'returns empty array if is not registered' do
-    user = build(:user)
-    res = Scrape::Maneger.new(user)
-    expect(res.url.empty?).to eq true
+    expect(@res.url.empty?).to eq true
   end
   # 登録されている場合は/sp/を含むページの配列を1つ返す
   it 'returns array if is registered include /sp/' do
@@ -25,19 +29,31 @@ describe 'lib/scrape/maneger.rb' do
   end
   # 登録されていない場合はfalseを返す
   it 'returns false if is not registered does not include /sp/' do
-    user = build(:user)
-    res = Scrape::Maneger.new(user)
-    expect(res.sync).to eq false
-  end
-  # Lv12フォルダがない場合はfalseを返す
-  it 'returns false if is not level 12 folder' do
-    res = Scrape::Maneger.new(build(:user))
-    expect(res.extract('djdata/ruquia7/sp/')).to eq false
+    expect(@res.sync).to eq false
   end
   # 全て一から問題なく通ることの確認のテスト
   it 'returns true if is all correct' do
     res = Scrape::Maneger.new(build(:user, iidxid: '3223-5186'))
     expect(res.sync).to eq true
   end
-  # elemsの要素を書いて期待通りの動きをしているかチェック
+  # Lv12フォルダがない場合はnilを返す
+  it 'returns nil if does not exist level 12 folder' do
+    html = Nokogiri::HTML.parse(
+      @agent.get('http://beatmania-clearlamp.com/djdata/ruquia7/sp/').body,
+      nil,
+      'UTF-8'
+    )
+    expect(@res.folder_specific(html)).to eq nil
+  end
+  # 12フォルダが存在すればnokogiriのクラスを返す
+  it 'returns nokogiri class if does exist level 12 folder' do
+    html = Nokogiri::HTML.parse(
+      @agent.get('http://beatmania-clearlamp.com/djdata/lib_sheet/sp/').body,
+      nil,
+      'UTF-8'
+    )
+    expect(@res.folder_specific(html).is_a?(Nokogiri::XML::Element)).to be_truthy
+  end
+  # HTMLの整形
+  # 登録の正常判定
 end
