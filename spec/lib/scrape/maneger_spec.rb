@@ -54,6 +54,40 @@ describe 'lib/scrape/maneger.rb' do
     )
     expect(@res.send(:folder_specific, html).is_a?(Nokogiri::XML::Element)).to be_truthy
   end
+
+  context '#gigadelic_innocentwalls' do
+    it 'incorrect' do
+      expect(@res.send(:gigadelic_innocentwalls, 'test', 'elem')).to include('test')
+    end
+    elem = %(
+    <dl class="731 hyper" style="background-image: url(http://beatmania-clearlamp.com/common/img/bg_mypage-music_on.png);">
+    <dt class="EX"><span>.</span></dt>
+    <dd class="level l12">.</dd>
+    <dd class="musicName">gigadelic</dd>
+    <dd class="exe">
+    <form method="post" action="exe.php">
+    <input type="hidden" name="userId" value="">
+    <input type="hidden" name="musicId" value="731">
+    <select name="lampId">
+    <option value=""></option>
+    <option value="1">FC</option>
+    <option value="2" selected="selected">EX</option>
+    <option value="3">H</option>
+    <option value="4">C</option>
+    <option value="5">E</option>
+    <option value="6">A</option>
+    <option value="7">F</option>
+    <option value="8"></option>
+    </select>
+    </form>
+    </dd>
+    </dl>
+    )
+    it 'correct' do
+      expect(@res.send(:gigadelic_innocentwalls, 'gigadelic', elem)).to include('gigadelic[H]')
+    end
+  end
   # HTMLの整形
+
   # 登録の正常判定
 end
