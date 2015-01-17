@@ -5,6 +5,9 @@ sudo: false
 cache: bundler
 gemfile:
   - Gemfile
+addons:
+  code_climate:
+    repo_token: 531df5f2febbf3df3867d03b948600e3f0bdbea210d3a6002da3007b220e7efc
 before_script:
   - cp config/database.travis.yml config/database.yml
   - bundle exec rake db:create db:migrate
