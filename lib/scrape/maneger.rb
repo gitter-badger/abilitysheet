@@ -4,15 +4,16 @@ module Scrape
     def initialize(current_user)
       @agent = Mechanize.new
       @base = 'http://beatmania-clearlamp.com/'
-      @current_user = current_user
       @url = []
+      @current_user = current_user
       search
     end
 
     def sync
-      res = go
-      res
+      go
     end
+
+    private
 
     def maneger_register(title, state)
       return false unless Sheet.exists?(title: title)

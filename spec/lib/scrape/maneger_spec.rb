@@ -43,7 +43,7 @@ describe 'lib/scrape/maneger.rb' do
       nil,
       'UTF-8'
     )
-    expect(@res.folder_specific(html)).to eq nil
+    expect(@res.send(:folder_specific, html)).to eq nil
   end
   # 12フォルダが存在すればnokogiriのクラスを返す
   it 'returns nokogiri class if does exist level 12 folder' do
@@ -52,7 +52,7 @@ describe 'lib/scrape/maneger.rb' do
       nil,
       'UTF-8'
     )
-    expect(@res.folder_specific(html).is_a?(Nokogiri::XML::Element)).to be_truthy
+    expect(@res.send(:folder_specific, html).is_a?(Nokogiri::XML::Element)).to be_truthy
   end
   # HTMLの整形
   # 登録の正常判定
