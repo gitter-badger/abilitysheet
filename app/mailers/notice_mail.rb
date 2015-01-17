@@ -14,4 +14,12 @@ class NoticeMail < ActionMailer::Base
     mail to: 'sitan.chabots@gmail.com'
     mail subject: '新規問合せ'
   end
+
+  def form_deal(email, subject, body)
+    @body = body + "\r\n"
+    @body += '---------------------------------------------------' + "\r\n"
+    @body += '※ このメールアドレスには返信ができません．'
+    mail to: email
+    mail subject: subject
+  end
 end
