@@ -1,6 +1,6 @@
 language: ruby
 rvm:
-  - 2.1.5
+- 2.2.1
 sudo: false
 cache: bundler
 gemfile:
@@ -9,5 +9,8 @@ addons:
   code_climate:
     repo_token: 531df5f2febbf3df3867d03b948600e3f0bdbea210d3a6002da3007b220e7efc
 before_script:
-  - cp config/database.travis.yml config/database.yml
-  - bundle exec rake db:create db:migrate
+- cp config/database.travis.yml config/database.yml
+- bundle exec rake db:create db:migrate
+before_install:
+- openssl aes-256-cbc -K $encrypted_b6a8623ba3b4_key -iv $encrypted_b6a8623ba3b4_iv
+  -in config/secrets.yml.enc -out config/secrets.yml -d

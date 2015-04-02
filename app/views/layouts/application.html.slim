@@ -70,7 +70,7 @@ html lang="ja"
           = form_for :user, url: { controller: 'devise/sessions', action: 'new' }, html: { class: 'navbar-form navbar-right' } do |f|
             .form-group
               .col-md-2
-                = f.text_field :username, autoforcus: true, class: 'form-control', placeholder: 'アカウント名'
+                = f.text_field :login, autoforcus: true, class: 'form-control', placeholder: 'アカウント名 or IIDXID'
             .form-group
               .col-md-2
                 = f.password_field :password, auctocomplete: 'off', class: 'form-control', placeholder: 'パスワード, remember→'
@@ -95,7 +95,7 @@ html lang="ja"
           = yield
       br
       footer align="right"
-        small &copy; IIDX☆12参考表 by839 2014
+        small &copy; IIDX☆12参考表 by839 2014-2015
         br
         = link_to 'http://twitter.com/IIDX_12'
           = fa_icon 'twitter', text: 'Twitter'

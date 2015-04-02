@@ -1,8 +1,11 @@
 class SheetsController < ApplicationController
-  before_action :set_sheet
+  before_action :set_sheet, only: [:clear, :hard]
 
   def power
     @sheets = Sheet.active.preload(:static)
+    @color = Score.convert_color(
+      User.find_by(iidxid: params[:iidxid]).scores
+    )
   end
 
   def clear
@@ -15,39 +18,28 @@ class SheetsController < ApplicationController
 
   private
 
+  def version_stat
+    @version_stat = []
+    sum, versions = 0, (5..22).map(&:to_i)
+    scores = User.find_by(iidxid: params[:iidxid]).scores
+    state = (action_name == 'clear') ? 5 : 3
+    versions.each do |version|
+      sheet_ids = @sheets.where(version: version).pluck(:id)
+      cnt = scores.where(sheet_id: sheet_ids, state: state..7).count
+      sum += cnt
+      @version_stat.push(cnt)
+    end
+    @version_stat.push(sum)
+  end
+
   def set_sheet
     @sheets = Sheet.active
-    @sheets = @sheets.where(version: params[:version]) if params[:version] && params[:version] != '0'
-    if user_signed_in?
-      flash[:alert] = '曲名をクリックすると状態を更新できます。' unless User.find_by(id: current_user.id).scores.exists?(state: 0..6)
-      flash[:notice] = 'versionを選択すると絞り込みができます。' unless User.find_by(id: current_user.id).scores.exists?(state: 0..6)
-    end
+    version_stat
+    @sheets = @sheets.where_version(version: params[:version])
     @state_examples = {}
     7.downto(0) { |j| @state_examples[Score.list_name[j]] = Score.list_color[j] }
-    @power = Sheet.power
-    sheet_id = @sheets.map(&:id)
-    s = User.find_by(iidxid: params[:iidxid]).scores.where(sheet_id: sheet_id)
-    @color = Score.convert_color(s)
-    @list_color = Score.list_color
-    @stat = Score.stat_info(s)
-    @versions = [['5',    5,  'btn btn-link'],
-                 ['6',    6,  'btn btn-link'],
-                 ['7',    7,  'btn btn-link'],
-                 ['8',    8,  'btn btn-link'],
-                 ['9',    9,  'btn btn-link'],
-                 ['10',   10, 'btn btn-link'],
-                 ['RED',  11, 'btn btn-danger'],
-                 ['HS',   12, 'btn btn-primary'],
-                 ['DD',   13, 'btn btn-default'],
-                 ['GOLD', 14, 'btn btn-info'],
-                 ['DJT',  15, 'btn btn-success'],
-                 ['EMP',  16, 'btn btn-danger'],
-                 ['SIR',  17, 'btn btn-primary'],
-                 ['RA',   18, 'btn btn-warning'],
-                 ['Lin',  19, 'btn btn-default'],
-                 ['tri',  20, 'btn btn-primary'],
-                 ['SPD',  21, 'btn btn-warning'],
-                 ['PEN',  22, 'btn btn-danger'],
-                 ['ALL',  0,  'btn btn-success']]
+    s = User.find_by(iidxid: params[:iidxid]).scores.where(sheet_id: @sheets.map(&:id))
+    @color, @stat = Score.convert_color(s), Score.stat_info(s)
+    @power, @list_color, @versions = Sheet.power, Score.list_color, Sheet.version
   end
 end
