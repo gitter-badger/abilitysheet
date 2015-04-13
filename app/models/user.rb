@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
   has_many :scores
   has_many :logs
+  has_one :api_key
   serialize :rival
   serialize :reverse_rival
   # Include default devise modules. Others available are:
